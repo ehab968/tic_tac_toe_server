@@ -1,4 +1,5 @@
 package com.mycompany.tictactoeserver;
+import com.iti.group3.tic_tac_toe_shared.UserDate;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -15,6 +16,7 @@ public class App extends Application {
 
     private static Scene scene;
 
+    UserDate user;
     @Override
     public void start(Stage stage) throws IOException {
         scene = new Scene(loadFXML("primary"), 640, 480);
