@@ -10,11 +10,19 @@ import java.io.Serializable;
  *
  * @author mahmo
  */ 
-public class UserDate implements Serializable{
-    int id;
-    String name;
+public class UserData implements Serializable{
+    private int id;
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
     
-   public UserDate(int id, String name){
+   public UserData(int id, String name){
         this.id = id;
         this.name = name;    
     }

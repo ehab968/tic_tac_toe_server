@@ -5,6 +5,14 @@
 package com.mycompany.tictactoeserver;
 
 
+import com.iti.group3.tic_tac_toe_shared.LoginData;
+import com.iti.group3.tic_tac_toe_shared.LoginResponse;
+import com.iti.group3.tic_tac_toe_shared.UserData;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
@@ -18,10 +26,45 @@ public class PrimaryController implements Initializable {
     /**
      * Initializes the controller class.
      */
+    ServerSocket serverSocket;
+    ObjectInputStream ear;
+    ObjectOutputStream mouth;
+    UserDAO userDAO=new UserDAO();
+    public PrimaryController() {
+            new Thread(() -> startServer()).start();
+
+    }
+            private void startServer() {
+                try {
+                    serverSocket = new ServerSocket(5005);
+                    while(true)
+                    {
+                        Socket s = serverSocket.accept();
+                        ear = new ObjectInputStream(s.getInputStream());
+                        mouth = new ObjectOutputStream(s.getOutputStream());
+                        LoginData request=(LoginData) ear.readObject();
+                        UserData user =userDAO.login(request);
+                        LoginResponse response = (user != null)
+                                ? new LoginResponse(true, "Login successful", user)
+                                : new LoginResponse(false, "Invalid username or password", null);
+                        
+                        mouth.writeObject(response);
+                        if (response.getUser() != null) {
+                            System.out.println("server response: " + response.getMessage() + ", " + response.getUser().getName());
+                        } else {
+                            System.out.println("server response: " + response.getMessage());
+                        }
+                        
+                        
+                    }
+                } catch (IOException | ClassNotFoundException ex) {
+                    System.getLogger(PrimaryController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+                }
+            }
+     
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
-        // TODO
-    }    
+    }
     
 }
