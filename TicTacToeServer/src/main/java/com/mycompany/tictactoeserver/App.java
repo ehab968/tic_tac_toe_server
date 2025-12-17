@@ -1,17 +1,12 @@
 package com.mycompany.tictactoeserver;
 import com.iti.group3.tic_tac_toe_shared.UserDate;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 
-/**
- * JavaFX App
- */
 public class App extends Application {
 
     private static Scene scene;
