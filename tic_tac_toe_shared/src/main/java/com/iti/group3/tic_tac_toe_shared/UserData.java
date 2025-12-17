@@ -11,19 +11,15 @@ import java.io.Serializable;
  * @author mahmo
  */ 
 public class UserData implements Serializable{
-    private static int counter = 1;
-    private  int id;
-    private int userName;
-    private int password;
+    private String userName;
+    private String password;
     private int score;
     private int status;
     private int wins;
     private int losses;
     private int draws;
 
-
-    public UserData(int userName, int password, int score, int status, int wins, int losses, int draws) {
-        this.id = counter++;
+    public UserData(String userName, String password, int score, int status, int wins, int losses, int draws) {
         this.userName = userName;
         this.password = password;
         this.score = score;
@@ -33,19 +29,11 @@ public class UserData implements Serializable{
         this.draws = draws;
     }
 
-    public static int getCounter() {
-        return counter;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public int getUserName() {
+    public String getUserName() {
         return userName;
     }
 
-    public int getPassword() {
+    public String getPassword() {
         return password;
     }
 
@@ -69,7 +57,8 @@ public class UserData implements Serializable{
         return draws;
     }
 
-    
+
+   
    
     
 }

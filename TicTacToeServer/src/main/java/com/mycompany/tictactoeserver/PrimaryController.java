@@ -5,7 +5,9 @@
 package com.mycompany.tictactoeserver;
 
 
+import com.iti.group3.tic_tac_toe_shared.UserData;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
 /**
@@ -21,7 +23,18 @@ public class PrimaryController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        // TODO
+        
+        
+        try {
+            UserDAO us = new UserDAO();
+            UserData ud = new UserData("ahmed_sayed", "root", 0, 0, 0, 0, 0);
+            // TODO
+
+            us.insertContact(ud);
+        } catch (SQLException ex) {
+            System.getLogger(PrimaryController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+        
     }    
     
 }
