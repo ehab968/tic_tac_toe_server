@@ -68,7 +68,7 @@ public class UserDAO {
             } else {
                 return null;
           }
-    }
+    
 }
     public boolean usernameExists(String username)  {
     PreparedStatement ps;
