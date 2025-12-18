@@ -8,6 +8,7 @@ import com.iti.group3.tic_tac_toe_shared.UserData;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.apache.derby.jdbc.ClientDriver;
 
@@ -44,36 +45,29 @@ public class UserDAO {
     }
     
     
-    UserData login(LoginData request){
-         if (request.getUserName().equals("shahd")
-                && request.getPassword().equals("123")) {
+    UserData login(LoginData request) throws SQLException{
+        
+         PreparedStatement pst = cnn.prepareStatement("SELECT * FROM USERS WHERE username = ? AND password = ?");
+           pst.setString(1, request.getUserName());
+           pst.setString(2, request.getPassword()); 
 
-            return new UserData(1, "shahd");
-        }
-
-        return null;
-    }
- /*       
-   PreparedStatement pst = con.prepareStatement("SELECT * FROM users WHERE username = ? AND password = ?");
-
-      
-            ps.setString(1, request.getUserName());
-            ps.setString(2, request.getPassword()); 
-
-            ResultSet rs = ps.executeQuery();
+          ResultSet rs = pst.executeQuery();
 
             if (rs.next()) {
                 UserData user = new UserData(
-                    rs.getInt("id"),
-                    rs.getString("username"),
-                    rs.getString("name"),
-                    rs.getString("email"),
-                    rs.getString("role")
+                    rs.getString("USERNAME"),
+                    rs.getString("PASSWORD"),
+                    rs.getInt("SCORE"),
+                    rs.getInt("STATUS"),
+                    rs.getInt("WINS"),
+                    rs.getInt("LOSSES"),
+                    rs.getInt("DRAWS")
+
                 );
                 return user;
             } else {
                 return null;
           }
-    }*/
+    }
 }
 

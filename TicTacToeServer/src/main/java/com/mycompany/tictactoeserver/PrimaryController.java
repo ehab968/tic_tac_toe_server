@@ -17,11 +17,6 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
-import com.iti.group3.tic_tac_toe_shared.UserData;
-import java.net.URL;
-import java.sql.SQLException;
-import java.util.ResourceBundle;
-import javafx.fxml.Initializable;
 /**
  * FXML Controller class
  *
@@ -29,18 +24,32 @@ import javafx.fxml.Initializable;
  */
 public class PrimaryController implements Initializable {
 
-    /**
-     * Initializes the controller class.
-     */
+  
     ServerSocket serverSocket;
     ObjectInputStream ear;
     ObjectOutputStream mouth;
     UserDAO userDAO=new UserDAO();
     public PrimaryController() {
-            new Thread(() -> startServer()).start();
+            new Thread(() -> startLoginServer()).start();
 
     }
-            private void startServer() {
+    
+     @Override
+    public void initialize(URL url, ResourceBundle rb) {
+
+        try {
+            UserDAO us = new UserDAO();
+            UserData ud = new UserData("ahmed_sayed", "root", 0, 0, 0, 0, 0);
+            // TODO
+
+            us.insertContact(ud);
+        } catch (SQLException ex) {
+            System.getLogger(PrimaryController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+        
+    }    
+    
+            private void startLoginServer() {
                 try {
                     serverSocket = new ServerSocket(5005);
                     while(true)
@@ -56,7 +65,7 @@ public class PrimaryController implements Initializable {
                         
                         mouth.writeObject(response);
                         if (response.getUser() != null) {
-                            System.out.println("server response: " + response.getMessage() + ", " + response.getUser().getName());
+                            System.out.println("server response: " + response.getMessage() + ", " + response.getUser().getUserName());
                         } else {
                             System.out.println("server response: " + response.getMessage());
                         }
@@ -65,29 +74,11 @@ public class PrimaryController implements Initializable {
                     }
                 } catch (IOException | ClassNotFoundException ex) {
                     System.getLogger(PrimaryController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-                }
+                } catch (SQLException ex) {
+            System.getLogger(PrimaryController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
             }
      
 
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-<<<<<<< HEAD
-    }
-=======
-
-        
-        
-        try {
-            UserDAO us = new UserDAO();
-            UserData ud = new UserData("ahmed_sayed", "root", 0, 0, 0, 0, 0);
-            // TODO
-
-            us.insertContact(ud);
-        } catch (SQLException ex) {
-            System.getLogger(PrimaryController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-        }
-        
-    }    
->>>>>>> bfab64d08341e7bc242c9a622f88854ef9a3e4c6
-    
+   
 }

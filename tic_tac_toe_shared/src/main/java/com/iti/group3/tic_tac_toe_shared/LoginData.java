@@ -6,10 +6,6 @@ package com.iti.group3.tic_tac_toe_shared;
 
 import java.io.Serializable;
 
-/**
- *
- * @author COMPUMARTS
- */
 public class LoginData implements Serializable {
     private String userName;
     private String password;
