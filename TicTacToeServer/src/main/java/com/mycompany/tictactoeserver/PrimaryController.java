@@ -29,8 +29,7 @@ public class PrimaryController implements Initializable {
 
   
     ServerSocket serverSocket;
-    ObjectInputStream ear;
-    ObjectOutputStream mouth;
+   
     UserDAO userDAO=new UserDAO();
     public PrimaryController() {
             new Thread(() -> startLoginServer()).start();
@@ -53,38 +52,38 @@ public class PrimaryController implements Initializable {
             private void startLoginServer() {
 
                 try {
-                    serverSocket = new ServerSocket(5005);
+                    serverSocket = new ServerSocket(5006);
                     while(true)
                     {
                         Socket s = serverSocket.accept();
-                        ear = new ObjectInputStream(s.getInputStream());
-                        mouth = new ObjectOutputStream(s.getOutputStream());
-                        LoginData request=(LoginData) ear.readObject();
-                        UserData user =userDAO.login(request);
-                        Response<UserData> response = (user != null)
-                                ? new Response(true, "Login successful", user)
-                                : new Response(false, "Invalid username or password", null);
-                        
-                        mouth.writeObject(response);
-                        if (response.getData() != null) {
-                            System.out.println("server response: " + response.getMessage() + ", " + response.getData().getUserName());
-                        } else {
-                            System.out.println("server response: " + response.getMessage());
-                        }
-                        mouth.close();
-                        ear.close();
-                        s.close();
+                        new Thread(() -> handleClient(s)).start();
                     }
-                } catch (IOException | ClassNotFoundException ex) {
-                    System.getLogger(PrimaryController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-                } catch (SQLException ex) {
+                } catch (IOException ex) {
             System.getLogger(PrimaryController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
             }
      
+void handleClient( Socket s){
+        
+        try {
+            ObjectInputStream  ear = new ObjectInputStream(s.getInputStream());
+            ObjectOutputStream  mouth = new ObjectOutputStream(s.getOutputStream());
+            LoginData request=(LoginData) ear.readObject();
+            UserData user =userDAO.login(request);
+            Response<UserData> response = (user != null)
+                    ? new Response(true, "Login successful", user)
+                    : new Response(false, "Invalid username or password", null);
+                        
+        mouth.writeObject(response);
+        mouth.close();
+        ear.close();
+        s.close();
+        } catch (IOException | ClassNotFoundException | SQLException ex) {
+            System.getLogger(PrimaryController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+                
+    
+        }
 
-   
+
 }
-
-
-
