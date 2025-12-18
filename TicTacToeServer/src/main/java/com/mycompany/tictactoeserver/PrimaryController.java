@@ -6,6 +6,12 @@ package com.mycompany.tictactoeserver;
 
 
 import com.iti.group3.tic_tac_toe_shared.UserData;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -16,25 +22,19 @@ import javafx.fxml.Initializable;
  * @author User
  */
 public class PrimaryController implements Initializable {
-
-    /**
-     * Initializes the controller class.
-     */
+        ServerSocket serverSocket ;
+                     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        
-        
-        try {
-            UserDAO us = new UserDAO();
-            UserData ud = new UserData("ahmed_sayed", "root", 0, 0, 0, 0, 0);
-            // TODO
-
-            us.insertContact(ud);
-        } catch (SQLException ex) {
-            System.getLogger(PrimaryController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-        }
-        
+   new Thread(() -> {
+            ServerMain server = new ServerMain();
+            server.startServer();
+        }).start();
+ 
     }    
     
 }
+
+
+

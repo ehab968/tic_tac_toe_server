@@ -47,7 +47,27 @@ public class UserDAO {
     }
     
     
-    
-    
-    
+    public boolean usernameExists(String username)  {
+    PreparedStatement ps;
+        try {
+            ps = cnn.prepareStatement(
+                    "SELECT USERNAME FROM USERS WHERE USERNAME = ?"
+            );
+           ps.setString(1, username);
+           
+           if(ps.executeQuery().next())return true;
+           else return false;
+           //return ps.executeQuery().next();
+
+        
+        } catch (SQLException ex) {
+            System.getLogger(UserDAO.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+        return false;
+
+    }
 }
+    
+    
+    
+
