@@ -10,6 +10,7 @@ import com.iti.group3.tic_tac_toe_shared.LoginResponse;
 import com.iti.group3.tic_tac_toe_shared.UserData;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -24,6 +25,7 @@ import javafx.fxml.Initializable;
  */
 public class PrimaryController implements Initializable {
 
+
   
     ServerSocket serverSocket;
     ObjectInputStream ear;
@@ -34,19 +36,17 @@ public class PrimaryController implements Initializable {
 
     }
     
-     @Override
+ 
+                     
+    @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        try {
-            UserDAO us = new UserDAO();
-            UserData ud = new UserData("ahmed_sayed", "root", 0, 0, 0, 0, 0);
-            // TODO
+   new Thread(() -> {
+            ServerMain server = new ServerMain();
+            server.startServer();
+        }).start();
+ 
 
-            us.insertContact(ud);
-        } catch (SQLException ex) {
-            System.getLogger(PrimaryController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-        }
-        
     }    
     
             private void startLoginServer() {
@@ -82,3 +82,6 @@ public class PrimaryController implements Initializable {
 
    
 }
+
+
+
