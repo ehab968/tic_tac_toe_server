@@ -1,5 +1,6 @@
 package com.mycompany.tictactoeserver;
 import com.iti.group3.tic_tac_toe_shared.UserData;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,6 +15,7 @@ import java.io.IOException;
 public class App extends Application {
 
     private static Scene scene;
+    
 
     UserData user;
     @Override
