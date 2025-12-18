@@ -10,18 +10,18 @@ import java.io.Serializable;
  *
  * @author COMPUMARTS
  */
-public class LoginResponse implements Serializable {
+public class Response<T> implements Serializable {
     private boolean success;   
     private String message;   
-    private UserData user;         
+    private T data;         
 
-    public LoginResponse(boolean success, String message, UserData user) {
+    public Response(boolean success, String message, T data) {
         this.success = success;
         this.message = message;
-        this.user = user;
+        this.data = data;
     }
 
     public boolean isSuccess() { return success; }
     public String getMessage() { return message; }
-    public UserData getUser() { return user; }
+    public T getData() { return data; }
 }
