@@ -3,17 +3,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.mycompany.tictactoeserver;
-
+import com.iti.group3.tic_tac_toe_shared.LoginData;
 import com.iti.group3.tic_tac_toe_shared.UserData;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.apache.derby.jdbc.ClientDriver;
-/**
- *
- * @author Ahmed Sayed
- */
+
 public class UserDAO {
     static Connection cnn;
     
@@ -47,6 +45,31 @@ public class UserDAO {
     }
     
     
+    UserData login(LoginData request) throws SQLException{
+        
+         PreparedStatement pst = cnn.prepareStatement("SELECT * FROM USERS WHERE username = ? AND password = ?");
+           pst.setString(1, request.getUserName());
+           pst.setString(2, request.getPassword()); 
+
+          ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                UserData user = new UserData(
+                    rs.getString("USERNAME"),
+                    rs.getString("PASSWORD"),
+                    rs.getInt("SCORE"),
+                    rs.getInt("STATUS"),
+                    rs.getInt("WINS"),
+                    rs.getInt("LOSSES"),
+                    rs.getInt("DRAWS")
+
+                );
+                return user;
+            } else {
+                return null;
+          }
+    }
+}
     public boolean usernameExists(String username)  {
     PreparedStatement ps;
         try {

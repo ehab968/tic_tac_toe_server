@@ -11,6 +11,7 @@ import java.io.Serializable;
  * @author mahmo
  */ 
 public class UserData implements Serializable{
+
     private String userName;
     private String password;
     private int score;
@@ -57,8 +58,4 @@ public class UserData implements Serializable{
         return draws;
     }
 
-
-   
-   
-    
 }
