@@ -5,7 +5,15 @@
 package com.mycompany.tictactoeserver;
 
 
+import com.iti.group3.tic_tac_toe_shared.CommandType;
+import com.iti.group3.tic_tac_toe_shared.LoginData;
+import com.iti.group3.tic_tac_toe_shared.Response;
 import com.iti.group3.tic_tac_toe_shared.UserData;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -17,24 +25,63 @@ import javafx.fxml.Initializable;
  */
 public class PrimaryController implements Initializable {
 
-    /**
-     * Initializes the controller class.
-     */
+
+    ServerSocket serverSocket;
+   
+    UserDAO userDAO=new UserDAO();
+    public PrimaryController() {
+            new Thread(() -> startLoginServer()).start();
+
+    }
+    
+ 
+                     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        
-        
-        try {
-            UserDAO us = new UserDAO();
-            UserData ud = new UserData("ahmed_sayed", "root", 0, 0, 0, 0, 0);
-            // TODO
+   new Thread(() -> {
+            ServerMain server = new ServerMain();
+            server.startServer();
+        }).start();
+ 
 
-            us.insertContact(ud);
-        } catch (SQLException ex) {
-            System.getLogger(PrimaryController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-        }
-        
     }    
     
+            private void startLoginServer() {
+
+                try {
+                    serverSocket = new ServerSocket(5006);
+                    while(true)
+                    {
+                        Socket s = serverSocket.accept();
+                        new Thread(() -> handleClient(s)).start();
+                    }
+                } catch (IOException ex) {
+            System.getLogger(PrimaryController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+            }
+     
+    void handleClient( Socket s){
+
+            try {
+                ObjectInputStream  ear = new ObjectInputStream(s.getInputStream());
+                ObjectOutputStream  mouth = new ObjectOutputStream(s.getOutputStream());
+                LoginData request=(LoginData) ear.readObject();
+                UserData user =userDAO.login(request);
+                Response<UserData> response = (user != null)
+                        ? new Response(true, CommandType.LOGIN_SUCCESS, user)
+                        : new Response(false,CommandType.Invalid_Username_or_password, null);
+
+            mouth.writeObject(response);
+            mouth.close();
+            ear.close();
+            s.close();
+            } catch (IOException | ClassNotFoundException | SQLException ex) {
+                System.getLogger(PrimaryController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            }
+
+
+            }
+
+
 }
