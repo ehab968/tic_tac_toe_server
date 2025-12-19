@@ -13,6 +13,7 @@ import java.io.Serializable;
 public enum CommandType implements Serializable {
     REGISTER,
     LOGIN,
+    Invalid_Username_or_password,
     REGISTER_SUCCESS,
     REGISTER_FAILED,
     USERNAME_EXISTS,
