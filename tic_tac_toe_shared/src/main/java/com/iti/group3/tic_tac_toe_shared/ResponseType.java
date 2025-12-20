@@ -17,4 +17,6 @@ public enum ResponseType implements Serializable {
     USERNAME_EXISTS,
     LOGIN_SUCCESS,
     LOGIN_FAILED,
+    SERVER_FAILURE,
+    UNSUPPORTED_REQUESt,
 }
