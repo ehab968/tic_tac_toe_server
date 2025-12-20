@@ -5,15 +5,15 @@
 package com.mycompany.tictactoeserver;
 
 import com.iti.group3.tic_tac_toe_shared.Command;
-import com.iti.group3.tic_tac_toe_shared.UserData;
+import com.iti.group3.tic_tac_toe_shared.CommandType;
 import com.iti.group3.tic_tac_toe_shared.LoginData;
+import com.iti.group3.tic_tac_toe_shared.Response;
+import com.iti.group3.tic_tac_toe_shared.UserData;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import com.iti.group3.tic_tac_toe_shared.CommandType;
-import com.iti.group3.tic_tac_toe_shared.Response;
 
 
 /**
