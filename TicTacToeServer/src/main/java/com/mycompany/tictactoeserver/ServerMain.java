@@ -6,12 +6,14 @@ package com.mycompany.tictactoeserver;
 
 import com.iti.group3.tic_tac_toe_shared.Command;
 import com.iti.group3.tic_tac_toe_shared.UserData;
+import com.iti.group3.tic_tac_toe_shared.LoginData;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import com.iti.group3.tic_tac_toe_shared.CommandType;
+import com.iti.group3.tic_tac_toe_shared.Response;
 
 
 /**
@@ -22,6 +24,7 @@ public class ServerMain {
 
     private ServerSocket serverSocket;
 
+   
     public void startServer() {
         try {
             serverSocket = new ServerSocket(5005);
@@ -62,6 +65,63 @@ class ServerHandler extends Thread {
         }
     }
 
+
+ @Override
+public void run() {
+    try {
+     
+            Object obj = in.readObject();
+
+            if (!(obj instanceof Command)) {
+                return;
+            }
+            Command command = (Command) obj;
+             Response<UserData> response;
+             switch(command.getType()){
+                 case LOGIN:
+                    LoginData loginData = (LoginData) command.getData();
+                    UserData userData = userDAO.login(loginData);
+                      
+                        response = (userData != null)
+                        ? new Response(true, CommandType.LOGIN_SUCCESS, userData)
+                        : new Response(false,CommandType.Invalid_Username_or_password, null);
+                        out.writeObject(response);
+                        out.flush();
+                        break;
+
+                 case REGISTER:
+                     UserData newUser = (UserData) command.getData();
+                      if (userDAO.usernameExists(newUser.getUserName())) {
+                         response = new Response<>(false, CommandType.USERNAME_EXISTS, null);
+                         
+                         System.out.println("Username exists");
+                     } else {
+                         userDAO.insertContact(newUser);
+                         response = new Response<>(true, CommandType.REGISTER_SUCCESS, newUser);
+                         System.out.println("User registered");
+                     }
+                     out.writeObject(response);
+                     out.flush();
+                     break;     
+             }
+
+        
+            
+       
+    } catch (Exception e) {
+        System.out.println("Client disconnected or error occurred");
+        e.printStackTrace();
+    } finally {
+        try {
+            if (in != null) in.close();
+            if (out != null) out.close();
+            if (socket != null) socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+}
 
     //@Override
 //    public void run() {
@@ -107,44 +167,3 @@ class ServerHandler extends Thread {
 //        }
 //    }
     
- @Override
-public void run() {
-    try {
-        while (true) {
-            Object obj = in.readObject();
-
-            if (!(obj instanceof UserData)) {
-                continue;
-            }
-
-            UserData user = (UserData) obj;
-
-            if (userDAO.usernameExists(user.getUserName())) {
-                out.writeObject(new Command(CommandType.USERNAME_EXISTS));
-                out.flush();
-                System.out.println("Username exists");
-            } else {
-                userDAO.insertContact(user);
-                out.writeObject(new Command(CommandType.REGISTER_SUCCESS));
-                out.flush();
-                System.out.println("User registered");
-            }
-        }
-    } catch (Exception e) {
-        System.out.println("Client disconnected or error occurred");
-        e.printStackTrace();
-    } finally {
-        try {
-            if (in != null) in.close();
-            if (out != null) out.close();
-            if (socket != null) socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-}
-
-
-
-
-}
