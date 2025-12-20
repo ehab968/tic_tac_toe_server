@@ -30,13 +30,13 @@ public class PrimaryController implements Initializable {
     UserDAO userDAO = new UserDAO();
 
     public PrimaryController() {
-        new Thread(() -> startLoginServer()).start();
+        //new Thread(() -> startLoginServer()).start();
 
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        new ServerMain().startServer();
+
     }
 
     private void startLoginServer() {

@@ -1,4 +1,5 @@
 package com.mycompany.tictactoeserver;
+
 import com.iti.group3.tic_tac_toe_shared.UserData;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -10,7 +11,6 @@ import java.io.IOException;
 public class App extends Application {
 
     private static Scene scene;
-    
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -29,6 +29,9 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
+        new Thread(() -> {
+            new ServerMain().startServer();
+        }).start();
         launch();
     }
 

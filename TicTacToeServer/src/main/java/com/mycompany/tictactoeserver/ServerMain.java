@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.tictactoeserver;
 
 import com.iti.group3.tic_tac_toe_shared.Command;
@@ -25,7 +21,7 @@ public class ServerMain {
             while (true) {
                 Socket socket = serverSocket.accept();
                 System.out.println("New client connected");
-                new RegisterHandler(socket);
+                new Thread(new RegisterHandler(socket)).start();
             }
 
         } catch (IOException e) {
@@ -34,7 +30,7 @@ public class ServerMain {
     }
 }
 
-class RegisterHandler extends Thread {
+class RegisterHandler implements Runnable {
 
     private Socket socket;
     private ObjectInputStream in;
@@ -44,10 +40,7 @@ class RegisterHandler extends Thread {
     public RegisterHandler(Socket socket) {
         this.socket = socket;
         try {
-            out = new ObjectOutputStream(socket.getOutputStream());
-            out.flush();
-            in = new ObjectInputStream(socket.getInputStream());
-            start();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -55,14 +48,14 @@ class RegisterHandler extends Thread {
 
     @Override
     public void run() {
+
         try {
-            while (true) {
-                Object obj = in.readObject();
+            out = new ObjectOutputStream(socket.getOutputStream());
+            out.flush();
+            in = new ObjectInputStream(socket.getInputStream());
 
-                if (!(obj instanceof UserData)) {
-                    continue;
-                }
-
+            Object obj = in.readObject();
+            if (obj instanceof UserData) {
                 UserData user = (UserData) obj;
 
                 if (userDAO.usernameExists(user.getUserName())) {
@@ -76,6 +69,7 @@ class RegisterHandler extends Thread {
                     System.out.println("User registered");
                 }
             }
+
         } catch (Exception e) {
             System.out.println("Client disconnected or error occurred");
             e.printStackTrace();
@@ -97,4 +91,3 @@ class RegisterHandler extends Thread {
     }
 
 }
-
