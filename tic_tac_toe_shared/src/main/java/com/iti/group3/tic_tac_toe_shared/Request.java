@@ -10,21 +10,21 @@ import java.io.Serializable;
  *
  * @author Ahmed Sayed
  */
-public class Command implements Serializable{
+public class Request implements Serializable{
     
-    private CommandType type;
-    private Object data;
+    private RequestType type;
+    private Serializable data;
 
-    public Command(CommandType type) {
+    public Request(RequestType type) {
         this.type = type;
     }
 
-    public Command(CommandType type, Object data) {
+    public Request(RequestType type, Serializable data) {
         this.type = type;
         this.data = data;
     }
 
-    public CommandType getType() {
+    public RequestType getType() {
         return type;
     }
 

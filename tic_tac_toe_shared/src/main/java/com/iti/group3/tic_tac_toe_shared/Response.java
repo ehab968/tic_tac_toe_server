@@ -12,16 +12,16 @@ import java.io.Serializable;
  */
 public class Response<T> implements Serializable {
     private boolean success;   
-    private CommandType message;   
+    private ResponseType message;   
     private T data;         
 
-    public Response(boolean success, CommandType message, UserData data) {
+    public Response(boolean success, ResponseType message, UserData data) {
         this.success = success;
         this.message = message;
         this.data = (T) data;
     }
 
     public boolean isSuccess() { return success; }
-    public CommandType getMessage() { return message; }
+    public ResponseType getMessage() { return message; }
     public T getData() { return data; }
 }

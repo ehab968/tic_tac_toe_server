@@ -1,23 +1,17 @@
 package com.mycompany.tictactoeserver;
-import com.iti.group3.tic_tac_toe_shared.UserData;
 
+import com.iti.group3.tic_tac_toe_shared.UserData;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 
-/**
- * JavaFX App
- */
 public class App extends Application {
 
     private static Scene scene;
-    
 
-    UserData user;
     @Override
     public void start(Stage stage) throws IOException {
         scene = new Scene(loadFXML("primary"), 640, 480);
@@ -35,6 +29,9 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
+        new Thread(() -> {
+            new ServerMain().startServer();
+        }).start();
         launch();
     }
 

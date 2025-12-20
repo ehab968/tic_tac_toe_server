@@ -4,11 +4,10 @@
  */
 package com.mycompany.tictactoeserver;
 
-
-
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
+
 /**
  * FXML Controller class
  *
@@ -16,21 +15,11 @@ import javafx.fxml.Initializable;
  */
 public class PrimaryController implements Initializable {
 
-
-    ServerMain server;
     public PrimaryController() {
-
     }
-    
- 
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+    }
 
-            new Thread(() -> {
-                     server = new ServerMain();
-                     server.startServer();
-                 }).start();
- 
-    }    
-      
 }
