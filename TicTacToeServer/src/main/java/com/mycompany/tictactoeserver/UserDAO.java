@@ -28,7 +28,7 @@ public class UserDAO {
 
     }
 
-    public int insertContact(AuthData c) throws SQLException {
+    public static int insertContact(AuthData c) throws SQLException {
         PreparedStatement ps = cnn.prepareStatement(
                 "INSERT INTO USERS (USERNAME, PASSWORD, SCORE, STATUS, WINS , LOSSES , DRAWS) VALUES (?, ? ,?, ?, ?, ?,?)"
         );
@@ -43,7 +43,7 @@ public class UserDAO {
         return ps.executeUpdate();
     }
 
-    UserData login(AuthData request) throws SQLException {
+    public static UserData login(AuthData request) throws SQLException {
 
         PreparedStatement pst = cnn.prepareStatement("SELECT * FROM USERS WHERE username = ? AND password = ?");
         pst.setString(1, request.getUserName());
@@ -68,7 +68,7 @@ public class UserDAO {
 
     }
 
-    public boolean usernameExists(String username) {
+    public static boolean usernameExists(String username) {
         PreparedStatement ps;
         try {
             ps = cnn.prepareStatement(
@@ -88,5 +88,16 @@ public class UserDAO {
         }
         return false;
 
+    }
+
+    public static int updateUserOnlineStatus(UserData user, int status) throws SQLException {
+        PreparedStatement ps = cnn.prepareStatement(
+                "UPDATE USERS SET STATUS = ? WHERE USERNAME = ?"
+        );
+        
+        ps.setInt(1, status);
+        ps.setString(2, user.getUserName());
+
+        return ps.executeUpdate();
     }
 }
