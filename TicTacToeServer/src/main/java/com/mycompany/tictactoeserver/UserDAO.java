@@ -11,6 +11,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.derby.jdbc.ClientDriver;
 
 public class UserDAO {
@@ -35,7 +37,7 @@ public class UserDAO {
         ps.setString(1, c.getUserName());
         ps.setString(2, c.getPassword());
         ps.setInt(3, 0);
-        ps.setInt(4, 0);
+        ps.setInt(4, 1);
         ps.setInt(5, 0);
         ps.setInt(6, 0);
         ps.setInt(7, 0);
@@ -88,5 +90,25 @@ public class UserDAO {
         }
         return false;
 
+    }
+
+    public List<UserData> getOnlineUsers() throws SQLException {
+        List<UserData> onlineUsers = new ArrayList<UserData>();
+        PreparedStatement pst = cnn.prepareStatement("SELECT * FROM USERS WHERE STATUS = ?");
+        pst.setInt(1, 1);
+        ResultSet rs = pst.executeQuery();
+        while(rs.next()) {
+            UserData user = new UserData(
+                    rs.getString("USERNAME"),
+                    rs.getString("PASSWORD"),
+                    rs.getInt("SCORE"),
+                    rs.getInt("STATUS"),
+                    rs.getInt("WINS"),
+                    rs.getInt("LOSSES"),
+                    rs.getInt("DRAWS")
+            );
+            onlineUsers.add(user);
+        }
+        return onlineUsers;
     }
 }

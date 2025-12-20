@@ -10,6 +10,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 
 public class ServerMain {
 
@@ -55,14 +56,14 @@ class ServerHandler extends Thread {
     @Override
     public void run() {
         try {
-
             Object obj = in.readObject();
-
+            
             if (!(obj instanceof Request)) {
                 return;
             }
             Request request = (Request) obj;
             Response<UserData> response;
+            Response<List<UserData>> responseList;
             switch (request.getType()) {
                 case LOGIN:
                     AuthData loginData = (AuthData) request.getData();
@@ -83,13 +84,24 @@ class ServerHandler extends Thread {
                         System.out.println("Username exists");
                     } else {
                         userDAO.insertContact(newUser);
-                        UserData createdUser =new UserData(newUser.getUserName(),newUser.getPassword(),0,0,0,0,0);
+                        UserData createdUser = new UserData(newUser.getUserName(), newUser.getPassword(), 0, 1, 0, 0, 0);
                         response = new Response<>(true, ResponseType.REGISTER_SUCCESS, createdUser);
                         System.out.println("User registered");
                     }
                     out.writeObject(response);
                     out.flush();
                     break;
+                case GetOnlineUsers:
+                    List<UserData> onlineUsers = userDAO.getOnlineUsers();
+                    if (onlineUsers.isEmpty()) {
+                        responseList = new Response<>(false, ResponseType.NO_ONLINEUSERS, null);
+                    } else {
+                        responseList = new Response<>(true, ResponseType.GET_ONLINE_USERS_SUCCESS, onlineUsers);
+                    }
+                    out.writeObject(responseList);
+                    out.flush();
+                    break;
+
             }
 
         } catch (Exception e) {

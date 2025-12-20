@@ -15,7 +15,7 @@ public class Response<T> implements Serializable {
     private ResponseType message;   
     private T data;         
 
-    public Response(boolean success, ResponseType message, UserData data) {
+    public Response(boolean success, ResponseType message, T data) {
         this.success = success;
         this.message = message;
         this.data = (T) data;

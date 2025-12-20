@@ -16,5 +16,6 @@ public enum RequestType implements Serializable {
     START_GAME,
     MOVE,
     GAME_OVER,
-    LOGOUT
+    LOGOUT,
+    GetOnlineUsers
 }
