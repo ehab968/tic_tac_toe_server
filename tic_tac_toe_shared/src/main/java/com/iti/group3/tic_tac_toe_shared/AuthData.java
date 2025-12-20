@@ -6,7 +6,7 @@ package com.iti.group3.tic_tac_toe_shared;
 
 import java.io.Serializable;
 
-public class LoginData implements Serializable {
+public class AuthData implements Serializable {
     private String userName;
     private String password;
 
@@ -26,7 +26,7 @@ public class LoginData implements Serializable {
         return password;
     }
 
-    public LoginData(String userName, String password) {
+    public AuthData(String userName, String password) {
         this.userName = userName;
         this.password = password;
     }

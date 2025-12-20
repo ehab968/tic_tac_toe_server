@@ -10,15 +10,9 @@ import java.io.Serializable;
  *
  * @author Ahmed Sayed
  */
-public enum CommandType implements Serializable {
+public enum RequestType implements Serializable {
     REGISTER,
     LOGIN,
-    Invalid_Username_or_password,
-    REGISTER_SUCCESS,
-    REGISTER_FAILED,
-    USERNAME_EXISTS,
-    LOGIN_SUCCESS,
-    LOGIN_FAILED,
     START_GAME,
     MOVE,
     GAME_OVER,
