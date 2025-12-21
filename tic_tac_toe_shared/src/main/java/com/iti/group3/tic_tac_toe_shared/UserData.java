@@ -1,7 +1,6 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  */
-
 package com.iti.group3.tic_tac_toe_shared;
 
 import java.io.Serializable;
@@ -9,8 +8,8 @@ import java.io.Serializable;
 /**
  *
  * @author mahmo
- */ 
-public class UserData implements Serializable{
+ */
+public class UserData implements Serializable {
 
     private String userName;
     private String password;
@@ -68,4 +67,7 @@ public class UserData implements Serializable{
         return draws;
     }
 
+    public void setStatus(int status) {
+        this.status = status;
+    }
 }
