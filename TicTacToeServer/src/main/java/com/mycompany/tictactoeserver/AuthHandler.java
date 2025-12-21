@@ -17,7 +17,7 @@ import java.sql.SQLException;
  */
 public class AuthHandler {
 
-    public static Response login(ClientSocket cs, Request request) {
+    public static Response login(UserSocket cs, Request request) {
         Response<UserData> response;
 
         AuthData loginData = (AuthData) request.getData();
@@ -39,7 +39,7 @@ public class AuthHandler {
         return response;
     }
 
-    public static Response register(ClientSocket cs, Request request) {
+    public static Response register(UserSocket cs, Request request) {
         AuthData newUser = (AuthData) request.getData();
         Response<UserData> response;
         UserDAO userDao = new UserDAO();

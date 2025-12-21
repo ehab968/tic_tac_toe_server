@@ -17,12 +17,13 @@ import java.util.List;
  */
 public class OnlineUsersHandler {
 
-    public static Response getOnlineUsers(ClientSocket cs, Request request) {
+    public static Response getOnlineUsers(UserSocket cs, Request request) {
         UserDAO userDAO = new UserDAO();
         Response<List<UserData>> responseList;
-
+        
         try {
             List<UserData> onlineUsers = userDAO.getOnlineUsers();
+            System.out.println("online users are"+onlineUsers);
             if (onlineUsers.isEmpty()) {
                 responseList = new Response<>(false, ResponseType.NO_ONLINEUSERS, null);
             } else {

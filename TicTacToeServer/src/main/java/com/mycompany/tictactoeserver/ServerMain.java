@@ -7,22 +7,19 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-
 public class ServerMain {
 
-    private ServerSocket serverSocket;
-    public static final List<ClientSocket> onlineSockets = new CopyOnWriteArrayList<>();
+    public static final List<UserSocket> onlineSockets = new CopyOnWriteArrayList<>();
 
     public void startServer() {
-
         try {
-            serverSocket = new ServerSocket(5005);
+            ServerSocket serverSocket = new ServerSocket(5005);
             System.out.println("Server started on port 5005");
 
             while (true) {
                 Socket socket = serverSocket.accept();
                 System.out.println("New client connected");
-                onUserConnected(new ClientSocket(socket));
+                onUserConnected(new UserSocket(socket));
             }
 
         } catch (IOException e) {
@@ -30,12 +27,11 @@ public class ServerMain {
         }
     }
 
-    public void onUserConnected(ClientSocket cs) {
+    public void onUserConnected(UserSocket cs) {
         onlineSockets.add(cs);
     }
 
-
-    public static void onUserDisconnected(ClientSocket cs) {
+    public static void onUserDisconnected(UserSocket cs) {
         onlineSockets.remove(cs);
         if (cs.user != null) {
             try {

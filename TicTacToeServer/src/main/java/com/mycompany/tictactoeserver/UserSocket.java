@@ -17,14 +17,14 @@ import java.net.Socket;
  *
  * @author mahmo
  */
-class ClientSocket extends Thread {
+class UserSocket extends Thread {
 
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
     public UserData user;
 
-    public ClientSocket(Socket socket) {
+    public UserSocket(Socket socket) {
         this.socket = socket;
         try {
             in = new ObjectInputStream(socket.getInputStream());
@@ -34,10 +34,6 @@ class ClientSocket extends Thread {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void setUser(UserData user) {
-        this.user = user;
     }
 
     @Override
@@ -59,11 +55,11 @@ class ClientSocket extends Thread {
                         break;
                     case GetOnlineUsers:
                         response = OnlineUsersHandler.getOnlineUsers(this, request);
+                        break;
                     case LOGOUT:
                     case START_GAME:
                     case MOVE:
                     case GAME_OVER:
-
                     default:
                         response = new Response(false, ResponseType.UNSUPPORTED_REQUESt, null);
                 }
@@ -81,7 +77,7 @@ class ClientSocket extends Thread {
             System.out.println("Client disconnected or error occurred");
             e.printStackTrace();
         } finally {
-            System.out.println("Client disconnected-- counter =");
+            System.out.println("Client disconnected");
             ServerMain.onUserDisconnected(this);
             try {
                 if (in != null) {
@@ -97,5 +93,9 @@ class ClientSocket extends Thread {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void setUser(UserData user) {
+        this.user = user;
     }
 }
