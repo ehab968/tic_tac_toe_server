@@ -1,0 +1,35 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.iti.group3.tic_tac_toe_shared;
+
+import java.util.Date;
+
+/**
+ *
+ * @author mahmo
+ */
+public class GameData {
+
+    String id;
+    public UserData playerX;
+    public UserData playerO;
+    public UserData winner;
+    public Date data;
+
+    public GameData(String id, UserData playerX, UserData playetO, UserData winner) {
+        this.id = id;
+        this.playerX = playerX;
+        this.playerO = playetO;
+        this.winner = winner;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setWinner(UserData player) {
+        winner = player;
+    }
+}

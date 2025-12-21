@@ -20,6 +20,16 @@ public class UserData implements Serializable{
     private int losses;
     private int draws;
 
+    public UserData(String userName) {
+        this.userName = userName;
+        this.password = "";
+        this.score = 0;
+        this.status = 0;
+        this.wins = 0;
+        this.losses = 0;
+        this.draws = 0;
+    }
+
     public UserData(String userName, String password, int score, int status, int wins, int losses, int draws) {
         this.userName = userName;
         this.password = password;
