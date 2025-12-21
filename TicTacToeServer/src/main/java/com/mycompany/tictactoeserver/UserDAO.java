@@ -45,7 +45,7 @@ public class UserDAO {
         return ps.executeUpdate();
     }
 
-    UserData login(AuthData request) throws SQLException {
+    public UserData login(AuthData request) throws SQLException {
 
         PreparedStatement pst = cnn.prepareStatement("SELECT * FROM USERS WHERE username = ? AND password = ?");
         pst.setString(1, request.getUserName());
@@ -97,7 +97,7 @@ public class UserDAO {
         PreparedStatement pst = cnn.prepareStatement("SELECT * FROM USERS WHERE STATUS = ?");
         pst.setInt(1, 1);
         ResultSet rs = pst.executeQuery();
-        while(rs.next()) {
+        while (rs.next()) {
             UserData user = new UserData(
                     rs.getString("USERNAME"),
                     rs.getString("PASSWORD"),
@@ -110,5 +110,17 @@ public class UserDAO {
             onlineUsers.add(user);
         }
         return onlineUsers;
+    }
+
+    public static int updateUserOnlineStatus(UserData user, int status) throws SQLException {
+        PreparedStatement ps = cnn.prepareStatement(
+                "UPDATE USERS SET STATUS = ? WHERE USERNAME = ?"
+        );
+
+        ps.setInt(1, status);
+        ps.setString(2, user.getUserName());
+
+        return ps.executeUpdate();
+
     }
 }

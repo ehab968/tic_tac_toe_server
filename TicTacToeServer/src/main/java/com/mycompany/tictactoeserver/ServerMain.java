@@ -1,20 +1,17 @@
 package com.mycompany.tictactoeserver;
 
-import com.iti.group3.tic_tac_toe_shared.Request;
-import com.iti.group3.tic_tac_toe_shared.AuthData;
-import com.iti.group3.tic_tac_toe_shared.Response;
-import com.iti.group3.tic_tac_toe_shared.ResponseType;
-import com.iti.group3.tic_tac_toe_shared.UserData;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 
 public class ServerMain {
 
     private ServerSocket serverSocket;
+    public static final List<ClientSocket> onlineSockets = new CopyOnWriteArrayList<>();
 
     public void startServer() {
 
@@ -25,102 +22,27 @@ public class ServerMain {
             while (true) {
                 Socket socket = serverSocket.accept();
                 System.out.println("New client connected");
-                new ServerHandler(socket);
+                onUserConnected(new ClientSocket(socket));
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-}
 
-class ServerHandler extends Thread {
-
-    private Socket socket;
-    private ObjectInputStream in;
-    private ObjectOutputStream out;
-    private UserDAO userDAO = new UserDAO();
-
-    public ServerHandler(Socket socket) {
-        this.socket = socket;
-        try {
-            out = new ObjectOutputStream(socket.getOutputStream());
-            out.flush();
-            in = new ObjectInputStream(socket.getInputStream());
-            start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void onUserConnected(ClientSocket cs) {
+        onlineSockets.add(cs);
     }
 
-    @Override
-    public void run() {
-        try {
-            Object obj = in.readObject();
-            
-            if (!(obj instanceof Request)) {
-                return;
-            }
-            Request request = (Request) obj;
-            Response<UserData> response;
-            Response<List<UserData>> responseList;
-            switch (request.getType()) {
-                case LOGIN:
-                    AuthData loginData = (AuthData) request.getData();
-                    UserData userData = userDAO.login(loginData);
 
-                    response = (userData != null)
-                            ? new Response(true, ResponseType.LOGIN_SUCCESS, userData)
-                            : new Response(false, ResponseType.Invalid_Username_or_password, null);
-                    out.writeObject(response);
-                    out.flush();
-                    break;
-
-                case REGISTER:
-                    AuthData newUser = (AuthData) request.getData();
-                    if (userDAO.usernameExists(newUser.getUserName())) {
-                        response = new Response<>(false, ResponseType.USERNAME_EXISTS, null);
-
-                        System.out.println("Username exists");
-                    } else {
-                        userDAO.insertContact(newUser);
-                        UserData createdUser = new UserData(newUser.getUserName(), newUser.getPassword(), 0, 1, 0, 0, 0);
-                        response = new Response<>(true, ResponseType.REGISTER_SUCCESS, createdUser);
-                        System.out.println("User registered");
-                    }
-                    out.writeObject(response);
-                    out.flush();
-                    break;
-                case GetOnlineUsers:
-                    List<UserData> onlineUsers = userDAO.getOnlineUsers();
-                    if (onlineUsers.isEmpty()) {
-                        responseList = new Response<>(false, ResponseType.NO_ONLINEUSERS, null);
-                    } else {
-                        responseList = new Response<>(true, ResponseType.GET_ONLINE_USERS_SUCCESS, onlineUsers);
-                    }
-                    out.writeObject(responseList);
-                    out.flush();
-                    break;
-
-            }
-
-        } catch (Exception e) {
-            System.out.println("Client disconnected or error occurred");
-            e.printStackTrace();
-        } finally {
-            System.out.println("Client disconnected-- counter =");
+    public static void onUserDisconnected(ClientSocket cs) {
+        onlineSockets.remove(cs);
+        if (cs.user != null) {
             try {
-                if (in != null) {
-                    in.close();
-                }
-                if (out != null) {
-                    out.close();
-                }
-                if (socket != null) {
-                    socket.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+                UserDAO.updateUserOnlineStatus(cs.user, 0);
+            } catch (SQLException ex) {
+                System.out.println("Faild to update user online status.. username is: " + cs.user.getUserName());
+                System.getLogger(ServerMain.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
             }
         }
     }

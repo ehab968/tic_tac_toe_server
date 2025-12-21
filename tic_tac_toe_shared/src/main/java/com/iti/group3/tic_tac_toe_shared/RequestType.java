@@ -13,9 +13,9 @@ import java.io.Serializable;
 public enum RequestType implements Serializable {
     REGISTER,
     LOGIN,
+    LOGOUT,
     START_GAME,
     MOVE,
     GAME_OVER,
-    LOGOUT,
     GetOnlineUsers
 }
