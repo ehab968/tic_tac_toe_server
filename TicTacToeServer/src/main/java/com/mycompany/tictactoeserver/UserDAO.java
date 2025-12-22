@@ -111,6 +111,17 @@ public class UserDAO {
         }
         return onlineUsers;
     }
+    
+    public int getOfflineUsers() throws SQLException {
+        int count = 0;
+        PreparedStatement pst = cnn.prepareStatement("SELECT * FROM USERS WHERE STATUS = ?");
+        pst.setInt(1, 0);
+        ResultSet rs = pst.executeQuery();
+        while (rs.next()) {
+           count++;
+        }
+        return count;
+    }
 
     public static int updateUserOnlineStatus(UserData user, int status) throws SQLException {
         PreparedStatement ps = cnn.prepareStatement(

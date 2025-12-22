@@ -73,29 +73,29 @@ class UserSocket extends Thread {
                     }
                 }
             }
+        } catch (java.net.SocketException e) {
+            System.out.println("client socket stopped");
         } catch (Exception e) {
-            System.out.println("Client disconnected or error occurred");
             e.printStackTrace();
         } finally {
-            System.out.println("Client disconnected");
             ServerMain.onUserDisconnected(this);
-            try {
-                if (in != null) {
-                    in.close();
-                }
-                if (out != null) {
-                    out.close();
-                }
-                if (socket != null) {
-                    socket.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            System.out.println("Client disconnected");
+            closeResources();
+            System.out.println("resources closed");
         }
     }
 
     public void setUser(UserData user) {
         this.user = user;
+    }
+
+    public void closeResources() {
+        try {
+            in.close();
+            out.close();
+            socket.close();
+        } catch (IOException ex) {
+            System.getLogger(UserSocket.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
     }
 }

@@ -10,20 +10,48 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ServerMain {
 
     public static final List<UserSocket> onlineSockets = new CopyOnWriteArrayList<>();
+    public static ServerSocket serverSocket;
+    public static volatile boolean run = false;
 
     public void startServer() {
+        run = true;
         try {
-            ServerSocket serverSocket = new ServerSocket(5005);
+            serverSocket = new ServerSocket(5005);
             System.out.println("Server started on port 5005");
+            while (run) {
+                try {
+                    Socket socket = serverSocket.accept();
+                    System.out.println("New client connected");
+                    onUserConnected(new UserSocket(socket));
+                } catch (IOException ex) {
+                    if (run) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
 
-            while (true) {
-                Socket socket = serverSocket.accept();
-                System.out.println("New client connected");
-                onUserConnected(new UserSocket(socket));
+    }
+
+    public static void stopServer() {
+        run = false;
+        UserDAO dao = new UserDAO();
+        try {
+            for (UserSocket us : onlineSockets) {
+                us.closeResources();
+                dao.updateUserOnlineStatus(us.user, 0);
+            }
+            if (serverSocket != null) {
+                serverSocket.close();
+                System.out.println("Server stopped");
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            System.getLogger(ServerMain.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        } catch (SQLException ex) {
+            System.getLogger(ServerMain.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
     }
 

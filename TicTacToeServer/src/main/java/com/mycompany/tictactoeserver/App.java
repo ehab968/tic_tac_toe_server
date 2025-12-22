@@ -19,6 +19,13 @@ public class App extends Application {
         stage.show();
     }
 
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        ServerMain.stopServer();
+        System.out.println("server app stop");
+    }
+
     static void setRoot(String fxml) throws IOException {
         scene.setRoot(loadFXML(fxml));
     }
@@ -29,9 +36,6 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
-        new Thread(() -> {
-            new ServerMain().startServer();
-        }).start();
         launch();
     }
 
