@@ -21,4 +21,11 @@ public enum ResponseType implements Serializable {
     GET_ONLINE_USERS_SUCCESS,
     SERVER_FAILURE,
     UNSUPPORTED_REQUESt,
+    INVITE_DROPPED,   
+    INVITE_ACCEPTED,
+    INVITE_REJECTED,
+    REQUEST_GAME,
+    START_GAME
+    
+
 }
