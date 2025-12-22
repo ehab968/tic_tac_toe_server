@@ -11,9 +11,10 @@ import java.io.Serializable;
  * @author COMPUMARTS
  */
 public class Response<T> implements Serializable {
-    private boolean success;   
-    private ResponseType message;   
-    private T data;         
+
+    private boolean success;
+    private ResponseType message;
+    private T data;
 
     public Response(boolean success, ResponseType message, T data) {
         this.success = success;
@@ -21,7 +22,20 @@ public class Response<T> implements Serializable {
         this.data = (T) data;
     }
 
-    public boolean isSuccess() { return success; }
-    public ResponseType getMessage() { return message; }
-    public T getData() { return data; }
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public ResponseType getMessage() {
+        return message;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    @Override
+    public String toString() {
+        return "success: " + success + " -- type: " + message + " -- data: " + data;
+    }
 }

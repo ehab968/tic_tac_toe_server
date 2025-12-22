@@ -4,13 +4,14 @@
  */
 package com.iti.group3.tic_tac_toe_shared;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  *
  * @author mahmo
  */
-public class GameData {
+public class GameData implements Serializable{
 
     String id;
     public UserData playerX;
@@ -30,8 +31,6 @@ public class GameData {
         this.playerX = playerX;
         this.playerO = playerO;
     }
-    
-    
 
     public String getId() {
         return id;

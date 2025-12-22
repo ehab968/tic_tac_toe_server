@@ -31,6 +31,13 @@ public class Request implements Serializable{
     public Object getData() {
         return data;
     }
+
+    @Override
+    public String toString() {
+        return "type: "+ type+ " -- data: "+data;
+    }
+    
+    
     
 }
 

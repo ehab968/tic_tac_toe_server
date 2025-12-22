@@ -20,6 +20,7 @@ public enum RequestType implements Serializable {
     GetOnlineUsers,
     INVITE_USER,
     ACCEPT_INVITE,
-    REJECT_INVITE
+    REJECT_INVITE,
+    SET_USER,
 
 }

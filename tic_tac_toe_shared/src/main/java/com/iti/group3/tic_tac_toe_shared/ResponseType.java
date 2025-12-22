@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @author mahmo
  */
 public enum ResponseType implements Serializable {
-  Invalid_Username_or_password,
+    Invalid_Username_or_password,
     REGISTER_SUCCESS,
     REGISTER_FAILED,
     USERNAME_EXISTS,
@@ -21,11 +21,10 @@ public enum ResponseType implements Serializable {
     GET_ONLINE_USERS_SUCCESS,
     SERVER_FAILURE,
     UNSUPPORTED_REQUESt,
-    INVITE_DROPPED,   
+    INVITE_DROPPED,
     INVITE_ACCEPTED,
+    START_GAME,
+    GAME_OVER,
     INVITE_REJECTED,
     REQUEST_GAME,
-    START_GAME
-    
-
 }
