@@ -16,7 +16,7 @@ public class GameData {
     public UserData playerX;
     public UserData playerO;
     public UserData winner;
-    public Date data;
+    public Date date;
 
     public GameData(String id, UserData playerX, UserData playetO, UserData winner) {
         this.id = id;
@@ -24,6 +24,14 @@ public class GameData {
         this.playerO = playetO;
         this.winner = winner;
     }
+
+    public GameData(String id, UserData playerX, UserData playerO) {
+        this.id = id;
+        this.playerX = playerX;
+        this.playerO = playerO;
+    }
+    
+    
 
     public String getId() {
         return id;
