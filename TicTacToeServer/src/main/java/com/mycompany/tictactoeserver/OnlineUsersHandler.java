@@ -4,6 +4,7 @@
  */
 package com.mycompany.tictactoeserver;
 
+import com.iti.group3.tic_tac_toe_shared.GameData;
 import com.iti.group3.tic_tac_toe_shared.Request;
 import com.iti.group3.tic_tac_toe_shared.RequestType;
 import com.iti.group3.tic_tac_toe_shared.Response;
@@ -25,7 +26,6 @@ public class OnlineUsersHandler {
 
         try {
             List<UserData> onlineUsers = userDAO.getOnlineUsers();
-            System.out.println("online users are" + onlineUsers);
             if (onlineUsers.isEmpty()) {
                 responseList = new Response<>(false, ResponseType.NO_ONLINEUSERS, null);
             } else {
@@ -39,48 +39,60 @@ public class OnlineUsersHandler {
         return responseList;
     }
 
-    public Response sendGameInvite(UserSocket userSocket1, Request request) {
+    private UserStreamSocket getUserStreamSocket(UserData userData) {
+        for (int i = 0; i < ServerMain.onlineStreamSockets.size(); i++) {
+            if (userData.getUserName().equals(ServerMain.onlineStreamSockets.get(i).user.getUserName())) {
+                return ServerMain.onlineStreamSockets.get(i);
 
-        UserSocket userSocket2 = null;
-        UserData userData2 = (UserData) request.getData();
-
-        for (int i = 0; i < ServerMain.onlineSockets.size(); i++) {
-
-            if (userData2.getUserName() == ServerMain.onlineSockets.get(i).user.getUserName()) {
-                userSocket2 = ServerMain.onlineSockets.get(i);
-                break;
             }
-
         }
+        return null;
+    }
+
+    public Response sendGameInvite(UserStreamSocket userSocket1, Request request) {
+
+        UserStreamSocket userSocket2 = getUserStreamSocket((UserData) request.getData());
 
         if (userSocket2 == null) {
             return new Response(false, ResponseType.INVITE_DROPPED, null);
         } else {
             try {
                 userSocket2.write(new Response(true, ResponseType.REQUEST_GAME, userSocket1.user));
-                Request userRequest = userSocket2.read();
-
-                if (userRequest.getType() == RequestType.ACCEPT_INVITE) {
-
-                    userSocket1.write(
-                            new Response(true, ResponseType.START_GAME, userSocket2.user)
-                    );
-
-                    userSocket2.write(
-                            new Response(true, ResponseType.START_GAME, userSocket1.user)
-                    );
-
-                    return null;
-                }
-                if (userRequest.getType() == RequestType.REJECT_INVITE) {
-                    return new Response(true, ResponseType.INVITE_REJECTED, null);
-                }
+                return null;
             } catch (IOException ex) {
-                System.getLogger(OnlineUsersHandler.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-            } catch (ClassNotFoundException ex) {
                 System.getLogger(OnlineUsersHandler.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
             }
         }
         return new Response(false, ResponseType.INVITE_DROPPED, null);
+
     }
+
+    public Response acceptGameInvite(UserStreamSocket userSocket2, Request request) {
+        try {
+            UserStreamSocket userSocket1 = getUserStreamSocket((UserData) request.getData());
+            GameData game = new GameData("1", userSocket1.user, userSocket1.user);
+
+            userSocket1.write(new Response(true, ResponseType.START_GAME, game));
+            userSocket2.write(new Response(true, ResponseType.START_GAME, game));
+            return null;
+        } catch (IOException ex) {
+            System.getLogger(OnlineUsersHandler.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+
+        return new Response(false, ResponseType.SERVER_FAILURE, null);
+    }
+
+    public Response rejectGameInvite(UserStreamSocket userSocket2, Request request) {
+        try {
+            UserStreamSocket userSocket1 = getUserStreamSocket((UserData) request.getData());
+            userSocket1.write(new Response(true, ResponseType.INVITE_REJECTED, null));
+            return null;
+        } catch (IOException ex) {
+            System.getLogger(OnlineUsersHandler.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+
+        return new Response(false, ResponseType.SERVER_FAILURE, null);
+
+    }
+
 }

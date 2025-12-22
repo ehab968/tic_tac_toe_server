@@ -45,7 +45,6 @@ class UserSocket extends Thread {
                 if (!(obj instanceof Request)) {
                     continue;
                 }
-                // request -> INVITE_USER & userData2 (userName2)
                 Request request = (Request) obj;
                 Response response = null;
                 switch (request.getType()) {
@@ -58,13 +57,7 @@ class UserSocket extends Thread {
                     case GetOnlineUsers:
                         response = onlineUserHandler.getOnlineUsers(this, request);
                         break;
-                    case INVITE_USER:
-                        response = onlineUserHandler.sendGameInvite(this ,request);
-                        break;
                     case LOGOUT:
-                    case START_GAME:
-                    case MOVE:
-                    case GAME_OVER:
                     default:
                         response = new Response(false, ResponseType.UNSUPPORTED_REQUESt, null);
                 }
@@ -100,17 +93,7 @@ class UserSocket extends Thread {
             out.close();
             socket.close();
         } catch (IOException ex) {
-            System.getLogger(UserSocket.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            System.getLogger(UserStreamSocket.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
-    }
-    public void write(Response response) throws IOException{
-       out.writeObject(response);
-       out.flush();
-    }
-    
-    public Request read() throws IOException, ClassNotFoundException{
-       Request request = (Request) in.readObject();
-       return request;
-
     }
 }

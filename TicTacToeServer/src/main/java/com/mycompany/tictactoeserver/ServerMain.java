@@ -10,25 +10,47 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ServerMain {
 
     public static final List<UserSocket> onlineSockets = new CopyOnWriteArrayList<>();
+    public static final List<UserStreamSocket> onlineStreamSockets = new CopyOnWriteArrayList<>();
     public static ServerSocket serverSocket;
+    public static ServerSocket serverStreamSocket;
     public static volatile boolean run = false;
 
     public void startServer() {
         run = true;
         try {
             serverSocket = new ServerSocket(5005);
-            System.out.println("Server started on port 5005");
-            while (run) {
-                try {
-                    Socket socket = serverSocket.accept();
-                    System.out.println("New client connected");
-                    onUserConnected(new UserSocket(socket));
-                } catch (IOException ex) {
-                    if (run) {
-                        ex.printStackTrace();
+            serverStreamSocket = new ServerSocket(5006);
+            System.out.println("Server started on port 5005 and 5006");
+
+            new Thread(() -> {
+                while (run) {
+                    try {
+                        Socket socket = serverSocket.accept();
+                        System.out.println("New client connected in socket 5005");
+                        onlineSockets.add(new UserSocket(socket));
+                    } catch (IOException ex) {
+                        if (run) {
+                            ex.printStackTrace();
+                        }
                     }
                 }
             }
+            ).start();
+
+            new Thread(() -> {
+                while (run) {
+                    try {
+                        Socket socket = serverStreamSocket.accept();
+                        System.out.println("New client connected in socket 5006");
+                        onlineStreamSockets.add(new UserStreamSocket(socket));
+                    } catch (IOException ex) {
+                        if (run) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+            }).start();
+
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -47,6 +69,8 @@ public class ServerMain {
                 serverSocket.close();
                 System.out.println("Server stopped");
             }
+            onlineSockets.clear();
+            onlineStreamSockets.clear();
 
         } catch (IOException ex) {
             System.getLogger(ServerMain.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);

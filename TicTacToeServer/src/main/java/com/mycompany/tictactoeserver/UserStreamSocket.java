@@ -17,14 +17,14 @@ import java.net.Socket;
  *
  * @author mahmo
  */
-class UserSocket extends Thread {
+class UserStreamSocket extends Thread {
 
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
     public UserData user;
 
-    public UserSocket(Socket socket) {
+    public UserStreamSocket(Socket socket) {
         this.socket = socket;
         try {
             in = new ObjectInputStream(socket.getInputStream());
@@ -48,20 +48,21 @@ class UserSocket extends Thread {
                 // request -> INVITE_USER & userData2 (userName2)
                 Request request = (Request) obj;
                 Response response = null;
+                System.out.println("Server Receiver request " + request);
+
                 switch (request.getType()) {
-                    case REGISTER:
-                        response = AuthHandler.register(this, request);
-                        break;
-                    case LOGIN:
-                        response = AuthHandler.login(this, request);
-                        break;
-                    case GetOnlineUsers:
-                        response = onlineUserHandler.getOnlineUsers(this, request);
+                    case SET_USER:
+                        user = (UserData) request.getData();
                         break;
                     case INVITE_USER:
-                        response = onlineUserHandler.sendGameInvite(this ,request);
+                        response = onlineUserHandler.sendGameInvite(this, request);
                         break;
-                    case LOGOUT:
+                    case ACCEPT_INVITE:
+                        response = onlineUserHandler.acceptGameInvite(this, request);
+                        break;
+                    case REJECT_INVITE:
+                        response = onlineUserHandler.rejectGameInvite(this, request);
+                        break;
                     case START_GAME:
                     case MOVE:
                     case GAME_OVER:
@@ -83,11 +84,22 @@ class UserSocket extends Thread {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            ServerMain.onUserDisconnected(this);
+            ServerMain.onlineStreamSockets.remove(this);
+
             System.out.println("Client disconnected");
             closeResources();
             System.out.println("resources closed");
         }
+    }
+
+    public void write(Response response) throws IOException {
+        out.writeObject(response);
+        out.flush();
+    }
+
+    public Request read() throws IOException, ClassNotFoundException {
+        Request request = (Request) in.readObject();
+        return request;
     }
 
     public void setUser(UserData user) {
@@ -100,17 +112,7 @@ class UserSocket extends Thread {
             out.close();
             socket.close();
         } catch (IOException ex) {
-            System.getLogger(UserSocket.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            System.getLogger(UserStreamSocket.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
-    }
-    public void write(Response response) throws IOException{
-       out.writeObject(response);
-       out.flush();
-    }
-    
-    public Request read() throws IOException, ClassNotFoundException{
-       Request request = (Request) in.readObject();
-       return request;
-
     }
 }
