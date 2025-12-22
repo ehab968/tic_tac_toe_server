@@ -39,11 +39,13 @@ class UserSocket extends Thread {
     @Override
     public void run() {
         try {
+            OnlineUsersHandler onlineUserHandler = new OnlineUsersHandler();
             while (true) {
                 Object obj = in.readObject();
                 if (!(obj instanceof Request)) {
                     continue;
                 }
+                // request -> INVITE_USER & userData2 (userName2)
                 Request request = (Request) obj;
                 Response response = null;
                 switch (request.getType()) {
@@ -54,7 +56,10 @@ class UserSocket extends Thread {
                         response = AuthHandler.login(this, request);
                         break;
                     case GetOnlineUsers:
-                        response = OnlineUsersHandler.getOnlineUsers(this, request);
+                        response = onlineUserHandler.getOnlineUsers(this, request);
+                        break;
+                    case INVITE_USER:
+                        response = onlineUserHandler.sendGameInvite(this ,request);
                         break;
                     case LOGOUT:
                     case START_GAME:
@@ -97,5 +102,15 @@ class UserSocket extends Thread {
 
     public void setUser(UserData user) {
         this.user = user;
+    }
+    
+    public void write(Response response) throws IOException{
+       out.writeObject(response);
+       out.flush();
+    }
+    
+    public Request read() throws IOException, ClassNotFoundException{
+       Request request = (Request) in.readObject();
+       return request;
     }
 }
