@@ -4,25 +4,32 @@
  */
 package com.iti.group3.tic_tac_toe_shared;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  *
  * @author mahmo
  */
-public class GameData {
+public class GameData implements Serializable{
 
     String id;
     public UserData playerX;
     public UserData playerO;
     public UserData winner;
-    public Date data;
+    public Date date;
 
     public GameData(String id, UserData playerX, UserData playetO, UserData winner) {
         this.id = id;
         this.playerX = playerX;
         this.playerO = playetO;
         this.winner = winner;
+    }
+
+    public GameData(String id, UserData playerX, UserData playerO) {
+        this.id = id;
+        this.playerX = playerX;
+        this.playerO = playerO;
     }
 
     public String getId() {

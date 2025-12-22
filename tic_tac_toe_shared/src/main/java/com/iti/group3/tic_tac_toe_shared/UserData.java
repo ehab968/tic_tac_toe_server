@@ -39,6 +39,11 @@ public class UserData implements Serializable {
         this.draws = draws;
     }
 
+    @Override
+    public String toString() {
+        return "userName: " + userName;
+    }
+
     public String getUserName() {
         return userName;
     }
