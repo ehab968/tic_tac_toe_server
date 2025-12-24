@@ -85,7 +85,7 @@ public class OnlineUsersHandler {
     public Response rejectGameInvite(UserStreamSocket userSocket2, Request request) {
         try {
             UserStreamSocket userSocket1 = getUserStreamSocket((UserData) request.getData());
-            userSocket1.write(new Response(true, ResponseType.INVITE_REJECTED, null));
+            userSocket1.write(new Response(true, ResponseType.INVITE_REJECTED, userSocket2.user));
             return null;
         } catch (IOException ex) {
             System.getLogger(OnlineUsersHandler.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
