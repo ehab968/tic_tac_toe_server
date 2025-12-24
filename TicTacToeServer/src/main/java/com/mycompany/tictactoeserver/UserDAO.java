@@ -111,14 +111,34 @@ public class UserDAO {
         }
         return onlineUsers;
     }
-    
+
+    public List<UserData> getLeaderBoard() throws SQLException {
+        List<UserData> onlineUsers = new ArrayList<UserData>();
+        PreparedStatement pst = cnn.prepareStatement("SELECT * FROM USERS ORDER BY SCORE DESC");
+
+        ResultSet rs = pst.executeQuery();
+        while (rs.next()) {
+            UserData user = new UserData(
+                    rs.getString("USERNAME"),
+                    rs.getString("PASSWORD"),
+                    rs.getInt("SCORE"),
+                    rs.getInt("STATUS"),
+                    rs.getInt("WINS"),
+                    rs.getInt("LOSSES"),
+                    rs.getInt("DRAWS")
+            );
+            onlineUsers.add(user);
+        }
+        return onlineUsers;
+    }
+
     public int getOfflineUsers() throws SQLException {
         int count = 0;
         PreparedStatement pst = cnn.prepareStatement("SELECT * FROM USERS WHERE STATUS = ?");
         pst.setInt(1, 0);
         ResultSet rs = pst.executeQuery();
         while (rs.next()) {
-           count++;
+            count++;
         }
         return count;
     }
@@ -133,5 +153,12 @@ public class UserDAO {
 
         return ps.executeUpdate();
 
+    }
+
+    public static int setAllUsersOffline() throws SQLException {
+        PreparedStatement ps = cnn.prepareStatement(
+                "UPDATE USERS SET STATUS = 0"
+        );
+        return ps.executeUpdate();
     }
 }

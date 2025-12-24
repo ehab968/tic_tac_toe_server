@@ -57,6 +57,9 @@ class UserSocket extends Thread {
                     case GetOnlineUsers:
                         response = onlineUserHandler.getOnlineUsers(this, request);
                         break;
+                    case GET_LEADER_BOARD:
+                        response = onlineUserHandler.getLeaderBoard(this, request);
+                        break;
                     case LOGOUT:
                     default:
                         response = new Response(false, ResponseType.UNSUPPORTED_REQUESt, null);

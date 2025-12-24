@@ -69,6 +69,11 @@ public class ServerMain {
                 serverSocket.close();
                 System.out.println("Server stopped");
             }
+            
+            if (serverStreamSocket != null) {
+                serverStreamSocket.close();
+            }
+            
             onlineSockets.clear();
             onlineStreamSockets.clear();
 

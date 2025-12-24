@@ -18,6 +18,7 @@ public enum RequestType implements Serializable {
     MOVE,
     GAME_OVER,
     GetOnlineUsers,
+    GET_LEADER_BOARD,
     INVITE_USER,
     ACCEPT_INVITE,
     REJECT_INVITE,

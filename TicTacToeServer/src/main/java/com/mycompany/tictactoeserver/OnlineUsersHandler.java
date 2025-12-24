@@ -39,6 +39,25 @@ public class OnlineUsersHandler {
         return responseList;
     }
 
+    public Response getLeaderBoard(UserSocket cs, Request request) {
+        UserDAO userDAO = new UserDAO();
+        Response<List<UserData>> responseList;
+
+        try {
+            List<UserData> onlineUsers = userDAO.getLeaderBoard();
+            if (onlineUsers.isEmpty()) {
+                responseList = new Response<>(false, ResponseType.NO_ONLINEUSERS, null);
+            } else {
+                responseList = new Response<>(true, ResponseType.GET_ONLINE_USERS_SUCCESS, onlineUsers);
+            }
+        } catch (SQLException ex) {
+            System.getLogger(OnlineUsersHandler.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            responseList = new Response(false, ResponseType.SERVER_FAILURE, null);
+        }
+
+        return responseList;
+    }
+
     private UserStreamSocket getUserStreamSocket(UserData userData) {
         for (int i = 0; i < ServerMain.onlineStreamSockets.size(); i++) {
             if (userData.getUserName().equals(ServerMain.onlineStreamSockets.get(i).user.getUserName())) {
