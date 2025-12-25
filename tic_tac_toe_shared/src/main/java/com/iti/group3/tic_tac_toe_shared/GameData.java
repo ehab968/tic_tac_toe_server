@@ -5,6 +5,7 @@
 package com.iti.group3.tic_tac_toe_shared;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -17,7 +18,7 @@ public class GameData implements Serializable {
     public UserData playerX;
     public UserData playerO;
     public UserData winner;
-    public Date date;
+    public LocalDateTime date;
 
     public GameData(String id, UserData playerX, UserData playetO, UserData winner) {
         this.id = id;
@@ -30,6 +31,14 @@ public class GameData implements Serializable {
         this.id = id;
         this.playerX = playerX;
         this.playerO = playerO;
+    }
+
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
     }
 
     public String getId() {
