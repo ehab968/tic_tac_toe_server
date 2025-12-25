@@ -112,6 +112,26 @@ public class UserDAO {
         return onlineUsers;
     }
 
+    public List<UserData> getLeaderBoard() throws SQLException {
+        List<UserData> appUsers = new ArrayList<UserData>();
+        PreparedStatement pst = cnn.prepareStatement("SELECT * FROM USERS ORDER BY SCORE DESC");
+
+        ResultSet rs = pst.executeQuery();
+        while (rs.next()) {
+            UserData user = new UserData(
+                    rs.getString("USERNAME"),
+                    rs.getString("PASSWORD"),
+                    rs.getInt("SCORE"),
+                    rs.getInt("STATUS"),
+                    rs.getInt("WINS"),
+                    rs.getInt("LOSSES"),
+                    rs.getInt("DRAWS")
+            );
+            appUsers.add(user);
+        }
+        return appUsers;
+    }
+
     public int getOfflineUsers() throws SQLException {
         int count = 0;
         PreparedStatement pst = cnn.prepareStatement("SELECT * FROM USERS WHERE STATUS = ?");
@@ -156,4 +176,10 @@ public class UserDAO {
         throw new SQLException("User not found");
     }
 
+    public static int setAllUsersOffline() throws SQLException {
+        PreparedStatement ps = cnn.prepareStatement(
+                "UPDATE USERS SET STATUS = 0"
+        );
+        return ps.executeUpdate();
+    }
 }

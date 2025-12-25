@@ -71,7 +71,7 @@ public class ServerMain {
                 serverSocket.close();
                 serverStreamSocket.close();
                 System.out.println("Server stopped (port 5005 & 5006)");
-            }
+            }                       
             onlineSockets.clear();
             onlineStreamSockets.clear();
 
