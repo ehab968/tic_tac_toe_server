@@ -37,7 +37,7 @@ public class UserDAO {
         ps.setString(1, c.getUserName());
         ps.setString(2, c.getPassword());
         ps.setInt(3, 0);
-        ps.setInt(4, 1);
+        ps.setInt(4, 0);
         ps.setInt(5, 0);
         ps.setInt(6, 0);
         ps.setInt(7, 0);
@@ -111,14 +111,14 @@ public class UserDAO {
         }
         return onlineUsers;
     }
-    
+
     public int getOfflineUsers() throws SQLException {
         int count = 0;
         PreparedStatement pst = cnn.prepareStatement("SELECT * FROM USERS WHERE STATUS = ?");
         pst.setInt(1, 0);
         ResultSet rs = pst.executeQuery();
         while (rs.next()) {
-           count++;
+            count++;
         }
         return count;
     }
@@ -134,4 +134,26 @@ public class UserDAO {
         return ps.executeUpdate();
 
     }
+
+    public int updateUserOnlineScore(UserData user) throws SQLException {
+
+        PreparedStatement ps = cnn.prepareStatement(
+                "UPDATE USERS SET SCORE = SCORE + 1 WHERE USERNAME = ?"
+        );
+        ps.setString(1, user.getUserName());
+        ps.executeUpdate();
+
+        PreparedStatement ps2 = cnn.prepareStatement(
+                "SELECT SCORE FROM USERS WHERE USERNAME = ?"
+        );
+        ps2.setString(1, user.getUserName());
+
+        ResultSet rs = ps2.executeQuery();
+        if (rs.next()) {
+            return rs.getInt("SCORE");
+        }
+
+        throw new SQLException("User not found");
+    }
+
 }

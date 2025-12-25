@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -11,6 +12,7 @@ public class ServerMain {
 
     public static final List<UserSocket> onlineSockets = new CopyOnWriteArrayList<>();
     public static final List<UserStreamSocket> onlineStreamSockets = new CopyOnWriteArrayList<>();
+    public static final List<GameSession> activeGames = new ArrayList<GameSession>();
     public static ServerSocket serverSocket;
     public static ServerSocket serverStreamSocket;
     public static volatile boolean run = false;
@@ -65,9 +67,10 @@ public class ServerMain {
                 us.closeResources();
                 dao.updateUserOnlineStatus(us.user, 0);
             }
-            if (serverSocket != null) {
+            if (serverSocket != null && serverStreamSocket != null) {
                 serverSocket.close();
-                System.out.println("Server stopped");
+                serverStreamSocket.close();
+                System.out.println("Server stopped (port 5005 & 5006)");
             }
             onlineSockets.clear();
             onlineStreamSockets.clear();
@@ -77,10 +80,6 @@ public class ServerMain {
         } catch (SQLException ex) {
             System.getLogger(ServerMain.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
-    }
-
-    public void onUserConnected(UserSocket cs) {
-        onlineSockets.add(cs);
     }
 
     public static void onUserDisconnected(UserSocket cs) {

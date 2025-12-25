@@ -5,6 +5,7 @@
 package com.mycompany.tictactoeserver;
 
 import com.iti.group3.tic_tac_toe_shared.GameData;
+import com.iti.group3.tic_tac_toe_shared.GameMove;
 import com.iti.group3.tic_tac_toe_shared.Request;
 import com.iti.group3.tic_tac_toe_shared.RequestType;
 import com.iti.group3.tic_tac_toe_shared.Response;
@@ -20,10 +21,11 @@ import java.util.List;
  */
 public class OnlineUsersHandler {
 
-    public Response getOnlineUsers(UserSocket cs, Request request) {
-        UserDAO userDAO = new UserDAO();
-        Response<List<UserData>> responseList;
+    UserDAO userDAO = new UserDAO();
 
+    public Response getOnlineUsers(UserSocket cs, Request request) {
+        Response<List<UserData>> responseList;
+        
         try {
             List<UserData> onlineUsers = userDAO.getOnlineUsers();
             if (onlineUsers.isEmpty()) {
@@ -70,8 +72,9 @@ public class OnlineUsersHandler {
     public Response acceptGameInvite(UserStreamSocket userSocket2, Request request) {
         try {
             UserStreamSocket userSocket1 = getUserStreamSocket((UserData) request.getData());
-            GameData game = new GameData("1", userSocket1.user, userSocket1.user);
-
+            GameSession session = new GameSession(userSocket1, userSocket2);
+            ServerMain.activeGames.add(session);
+            GameData game = new GameData("1", userSocket1.user, userSocket2.user);
             userSocket1.write(new Response(true, ResponseType.START_GAME, game));
             userSocket2.write(new Response(true, ResponseType.START_GAME, game));
             return null;
@@ -95,4 +98,72 @@ public class OnlineUsersHandler {
 
     }
 
+    private GameSession getSessionByPlayer(UserStreamSocket player) {
+        for (GameSession session : ServerMain.activeGames) {
+            if (session.contains(player)) {
+                return session;
+            }
+        }
+        return null;
+    }
+
+    private void removeSessionByPlayer(UserStreamSocket player) {
+        ServerMain.activeGames.removeIf(gameSession -> gameSession.contains(player));
+    }
+
+    public void sendMove(UserStreamSocket sender, Request request) {
+        GameMove gameMove = (GameMove) request.getData();
+        GameSession gameSession = getSessionByPlayer(sender);
+        if (gameSession == null) {
+            return;
+        }
+        UserStreamSocket recieveUserSocket = gameSession.getOpponent(sender);
+        try {
+            recieveUserSocket.write(new Response(true, ResponseType.Server_SENT_MOVE, gameMove));
+            sender.write(new Response(true, ResponseType.Server_SENT_MOVE, gameMove));
+        } catch (IOException ex) {
+            System.getLogger(OnlineUsersHandler.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+    }
+
+    public void restartGame(UserStreamSocket sender) {
+        GameSession gameSession = getSessionByPlayer(sender);
+        if (gameSession == null) {
+            return;
+        }
+        UserStreamSocket recieveUserSocket = gameSession.getOpponent(sender);
+        try {
+            recieveUserSocket.write(new Response(true, ResponseType.SERVER_RESTART_GAME, null));
+            sender.write(new Response(true, ResponseType.SERVER_RESTART_GAME, null));
+        } catch (IOException ex) {
+            System.getLogger(OnlineUsersHandler.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+    }
+
+    public void endGame(UserStreamSocket sender) {
+        GameSession gameSession = getSessionByPlayer(sender);
+        UserStreamSocket recieveUserSocket = gameSession.getOpponent(sender);
+        try {
+            recieveUserSocket.write(new Response(true, ResponseType.SERVER_END_GAME, null));
+            sender.write(new Response(true, ResponseType.SERVER_END_GAME, null));
+        } catch (IOException ex) {
+            System.getLogger(OnlineUsersHandler.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+        System.out.println("active games list is: " + ServerMain.activeGames.size());
+        removeSessionByPlayer(sender);
+        System.out.println("active games list is: " + ServerMain.activeGames.size());
+    }
+    
+    public void updateScore(UserStreamSocket sender, Request request) throws SQLException {
+        UserData winner = (UserData) request.getData();
+        int winnerscore = userDAO.updateUserOnlineScore(winner);
+        GameSession gameSession = getSessionByPlayer(sender);
+        UserStreamSocket recieveUserSocket = gameSession.getOpponent(sender);
+        try {
+            recieveUserSocket.write(new Response(true, ResponseType.SERVER_UPDATE_WINNER_SCORE, winnerscore));
+            sender.write(new Response(true, ResponseType.SERVER_UPDATE_WINNER_SCORE, winnerscore));
+        } catch (IOException ex) {
+            System.getLogger(OnlineUsersHandler.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        }
+    }
 }

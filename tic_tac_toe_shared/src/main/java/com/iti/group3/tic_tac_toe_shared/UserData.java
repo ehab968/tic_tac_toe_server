@@ -72,6 +72,10 @@ public class UserData implements Serializable {
         return draws;
     }
 
+    public void setScore(int score) {
+        this.score = score;
+    }
+
     public void setStatus(int status) {
         this.status = status;
     }

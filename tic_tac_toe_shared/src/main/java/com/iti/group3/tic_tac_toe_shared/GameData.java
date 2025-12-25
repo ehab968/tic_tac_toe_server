@@ -11,7 +11,7 @@ import java.util.Date;
  *
  * @author mahmo
  */
-public class GameData implements Serializable{
+public class GameData implements Serializable {
 
     String id;
     public UserData playerX;
@@ -34,6 +34,10 @@ public class GameData implements Serializable{
 
     public String getId() {
         return id;
+    }
+
+    public UserData getWinner() {
+        return winner;
     }
 
     public void setWinner(UserData player) {
