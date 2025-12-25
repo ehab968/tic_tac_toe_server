@@ -12,16 +12,13 @@ import java.io.Serializable;
  */
 //class for each action the user take on the grid
 public class GameMove implements Serializable {
+
     private int cellId;
     private char character;
-    private int moveOrder;
-    private UserData player;
 
-    public GameMove(int cellId, char character, int moveOrder, UserData player) {
+    public GameMove(int cellId, char character) {
         this.cellId = cellId;
         this.character = character;
-        this.player = player;
-        this.moveOrder = moveOrder;
     }
 
     public int getCellId() {
@@ -31,13 +28,4 @@ public class GameMove implements Serializable {
     public char getCharacter() {
         return character;
     }
-
-    public UserData getPlayer() {
-        return player;
-    }
-
-    public int getMoveOrder() {
-        return moveOrder;
-    }
-
 }

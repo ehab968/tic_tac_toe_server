@@ -17,10 +17,12 @@ public enum RequestType implements Serializable {
     START_GAME,
     MOVE,
     GAME_OVER,
+    RESTART_GAME,
+    END_GAME,
     GetOnlineUsers,
     INVITE_USER,
     ACCEPT_INVITE,
     REJECT_INVITE,
     SET_USER,
-
+    UPDATE_SCORE,
 }

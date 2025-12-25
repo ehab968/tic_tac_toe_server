@@ -4,6 +4,7 @@
  */
 package com.mycompany.tictactoeserver;
 
+import com.iti.group3.tic_tac_toe_shared.GameMove;
 import com.iti.group3.tic_tac_toe_shared.Request;
 import com.iti.group3.tic_tac_toe_shared.Response;
 import com.iti.group3.tic_tac_toe_shared.ResponseType;
@@ -64,8 +65,18 @@ class UserStreamSocket extends Thread {
                         response = onlineUserHandler.rejectGameInvite(this, request);
                         break;
                     case START_GAME:
-                    case MOVE:
-                    case GAME_OVER:
+                    case MOVE:      
+                        onlineUserHandler.sendMove(this, request);
+                        break;
+                    case RESTART_GAME:
+                        onlineUserHandler.restartGame(this);
+                        break;
+                    case END_GAME:
+                        onlineUserHandler.endGame(this);
+                        break;
+                    case UPDATE_SCORE:
+                        onlineUserHandler.updateScore(this, request);
+                        break;
                     default:
                         response = new Response(false, ResponseType.UNSUPPORTED_REQUESt, null);
                 }
@@ -85,7 +96,6 @@ class UserStreamSocket extends Thread {
             e.printStackTrace();
         } finally {
             ServerMain.onlineStreamSockets.remove(this);
-
             System.out.println("Client disconnected");
             closeResources();
             System.out.println("resources closed");
