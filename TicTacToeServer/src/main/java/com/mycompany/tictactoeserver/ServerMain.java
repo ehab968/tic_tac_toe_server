@@ -67,11 +67,14 @@ public class ServerMain {
                 us.closeResources();
                 dao.updateUserOnlineStatus(us.user, 0);
             }
+            for (UserStreamSocket us : onlineStreamSockets) {
+                us.closeResources();
+            }
             if (serverSocket != null && serverStreamSocket != null) {
                 serverSocket.close();
                 serverStreamSocket.close();
                 System.out.println("Server stopped (port 5005 & 5006)");
-            }                       
+            }
             onlineSockets.clear();
             onlineStreamSockets.clear();
 
