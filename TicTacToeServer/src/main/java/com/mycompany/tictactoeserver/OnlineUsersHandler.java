@@ -25,7 +25,7 @@ public class OnlineUsersHandler {
 
     public Response getOnlineUsers(UserSocket cs, Request request) {
         Response<List<UserData>> responseList;
-        
+
         try {
             List<UserData> onlineUsers = userDAO.getOnlineUsers();
             if (onlineUsers.isEmpty()) {
@@ -172,7 +172,7 @@ public class OnlineUsersHandler {
         removeSessionByPlayer(sender);
         System.out.println("active games list is: " + ServerMain.activeGames.size());
     }
-    
+
     public void updateScore(UserStreamSocket sender, Request request) throws SQLException {
         UserData winner = (UserData) request.getData();
         int winnerscore = userDAO.updateUserOnlineScore(winner);
@@ -185,4 +185,21 @@ public class OnlineUsersHandler {
             System.getLogger(OnlineUsersHandler.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
     }
+
+    public Response cancelGameInvite(UserStreamSocket sender, Request request) {
+        UserData targetUser = (UserData) request.getData();
+        UserStreamSocket targetSocket = getUserStreamSocket(targetUser);
+
+        if (targetSocket != null) {
+            try {
+                targetSocket.write(
+                        new Response(true, ResponseType.INVITE_DROPPED, sender.user)
+                );
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
 }
