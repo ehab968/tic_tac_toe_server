@@ -14,6 +14,7 @@ import com.iti.group3.tic_tac_toe_shared.UserData;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 /**
  *
@@ -93,7 +94,10 @@ public class OnlineUsersHandler {
             UserStreamSocket userSocket1 = getUserStreamSocket((UserData) request.getData());
             GameSession session = new GameSession(userSocket1, userSocket2);
             ServerMain.activeGames.add(session);
-            GameData game = new GameData("1", userSocket1.user, userSocket2.user);
+            
+            String gameId = UUID.randomUUID().toString();
+            GameData game = new GameData(gameId, userSocket1.user, userSocket2.user);
+
             userSocket1.write(new Response(true, ResponseType.START_GAME, game));
             userSocket2.write(new Response(true, ResponseType.START_GAME, game));
             return null;

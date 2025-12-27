@@ -107,6 +107,7 @@ class UserStreamSocket extends Thread {
     }
 
     public void write(Response response) throws IOException {
+        System.out.println("Server sending response to user" + user + " - " + response);
         out.writeObject(response);
         out.flush();
     }
