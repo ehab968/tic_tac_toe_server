@@ -5,14 +5,21 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
 
 <Pane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.tictactoeserver.PrimaryController">
 
     <!-- TITLE -->
     <Label layoutX="20" layoutY="20" style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Unified Server Dashboard" />
 
-    <!-- STATUS -->
+          <!-- STATUS -->
     <Label fx:id="serverStatus" layoutX="20" layoutY="60" style="-fx-text-fill: red; -fx-font-weight: bold;" text="● Server Offline" />
+   <VBox layoutX="20" layoutY="90.0" prefHeight="100.0" prefWidth="200.0">
+      <children>
+         <Label style="-fx-font-weight: bold;" text="Server IP Address" />
+         <Text fx:id="ipAddressLabel" style="-fx-font-size: 16px; -fx-text-fill: green; -fx-font-weight: bold;" />
+      </children>
+   </VBox>
    <VBox alignment="TOP_CENTER" layoutX="320.0" layoutY="55.0" spacing="20.0">
       <children>
       
@@ -25,14 +32,14 @@
    </VBox>
 
           <!-- ONLINE USERS -->
-    <Label layoutX="20.0" layoutY="120.0" style="-fx-font-weight: bold;" text="Online Users:" />
+    <Label layoutX="20.0" layoutY="140.0" style="-fx-font-weight: bold;" text="Online Users:" />
 
-    <Label fx:id="onlineUsersLabel" layoutX="150" layoutY="120" style="-fx-text-fill: green; -fx-font-weight: bold;" text="142" />
+    <Label fx:id="onlineUsersLabel" layoutX="150" layoutY="140.0" style="-fx-text-fill: green; -fx-font-weight: bold;" text="142" />
 
     <!-- OFFLINE USERS -->
-    <Label layoutX="20" layoutY="160" style="-fx-font-weight: bold;" text="Offline Users:" />
+    <Label layoutX="20" layoutY="180.0" style="-fx-font-weight: bold;" text="Offline Users:" />
 
-    <Label fx:id="offlineUsersLabel" layoutX="150" layoutY="160" style="-fx-text-fill: red; -fx-font-weight: bold;" text="308" />
+    <Label fx:id="offlineUsersLabel" layoutX="150" layoutY="180.0" style="-fx-text-fill: red; -fx-font-weight: bold;" text="308" />
 
     <!-- SERVER CONTROL -->
     <Label layoutX="20" layoutY="260" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Server Control" />

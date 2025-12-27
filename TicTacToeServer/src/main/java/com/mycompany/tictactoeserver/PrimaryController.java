@@ -1,6 +1,8 @@
 package com.mycompany.tictactoeserver;
 
+import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
@@ -12,6 +14,7 @@ import javafx.scene.chart.PieChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.text.Text;
 
 /**
  * FXML Controller class
@@ -36,6 +39,9 @@ public class PrimaryController implements Initializable {
     private Label offlineUsersLabel;
 
     @FXML
+    private Text ipAddressLabel;
+
+    @FXML
     private Label serverStatus;
 
     private int onlineUsers;
@@ -49,7 +55,10 @@ public class PrimaryController implements Initializable {
             getOlineUsers();
             getOfflineUsers();
             updateUI();
+            ipAddressLabel.setText(InetAddress.getLocalHost().toString());
         } catch (SQLException ex) {
+            System.getLogger(PrimaryController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+        } catch (UnknownHostException ex) {
             System.getLogger(PrimaryController.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
     }
