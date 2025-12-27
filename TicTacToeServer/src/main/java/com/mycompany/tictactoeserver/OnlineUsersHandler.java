@@ -14,6 +14,7 @@ import com.iti.group3.tic_tac_toe_shared.UserData;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 /**
  *
@@ -25,7 +26,7 @@ public class OnlineUsersHandler {
 
     public Response getOnlineUsers(UserSocket cs, Request request) {
         Response<List<UserData>> responseList;
-        
+
         try {
             List<UserData> onlineUsers = userDAO.getOnlineUsers();
             if (onlineUsers.isEmpty()) {
@@ -93,7 +94,10 @@ public class OnlineUsersHandler {
             UserStreamSocket userSocket1 = getUserStreamSocket((UserData) request.getData());
             GameSession session = new GameSession(userSocket1, userSocket2);
             ServerMain.activeGames.add(session);
-            GameData game = new GameData("1", userSocket1.user, userSocket2.user);
+            
+            String gameId = UUID.randomUUID().toString();
+            GameData game = new GameData(gameId, userSocket1.user, userSocket2.user);
+
             userSocket1.write(new Response(true, ResponseType.START_GAME, game));
             userSocket2.write(new Response(true, ResponseType.START_GAME, game));
             return null;
@@ -172,7 +176,7 @@ public class OnlineUsersHandler {
         removeSessionByPlayer(sender);
         System.out.println("active games list is: " + ServerMain.activeGames.size());
     }
-    
+
     public void updateScore(UserStreamSocket sender, Request request) throws SQLException {
         UserData winner = (UserData) request.getData();
         int winnerscore = userDAO.updateUserOnlineScore(winner);
@@ -185,4 +189,21 @@ public class OnlineUsersHandler {
             System.getLogger(OnlineUsersHandler.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
     }
+
+    public Response cancelGameInvite(UserStreamSocket sender, Request request) {
+        UserData targetUser = (UserData) request.getData();
+        UserStreamSocket targetSocket = getUserStreamSocket(targetUser);
+
+        if (targetSocket != null) {
+            try {
+                targetSocket.write(
+                        new Response(true, ResponseType.INVITE_DROPPED, sender.user)
+                );
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
 }

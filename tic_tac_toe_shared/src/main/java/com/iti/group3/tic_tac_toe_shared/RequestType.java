@@ -26,4 +26,6 @@ public enum RequestType implements Serializable {
     REJECT_INVITE,
     SET_USER,
     UPDATE_SCORE,
+    CANCEL_INVITE
+
 }

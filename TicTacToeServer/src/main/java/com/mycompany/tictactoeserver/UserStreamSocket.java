@@ -65,7 +65,7 @@ class UserStreamSocket extends Thread {
                         response = onlineUserHandler.rejectGameInvite(this, request);
                         break;
                     case START_GAME:
-                    case MOVE:      
+                    case MOVE:
                         onlineUserHandler.sendMove(this, request);
                         break;
                     case RESTART_GAME:
@@ -77,6 +77,10 @@ class UserStreamSocket extends Thread {
                     case UPDATE_SCORE:
                         onlineUserHandler.updateScore(this, request);
                         break;
+                    case CANCEL_INVITE:
+                        response = onlineUserHandler.cancelGameInvite(this, request);
+                        break;
+
                     default:
                         response = new Response(false, ResponseType.UNSUPPORTED_REQUESt, null);
                 }
@@ -103,6 +107,7 @@ class UserStreamSocket extends Thread {
     }
 
     public void write(Response response) throws IOException {
+        System.out.println("Server sending response to user" + user + " - " + response);
         out.writeObject(response);
         out.flush();
     }
