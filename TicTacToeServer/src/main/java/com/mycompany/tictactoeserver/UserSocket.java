@@ -74,13 +74,9 @@ class UserSocket extends Thread {
                     }
                 }
             }
-        } catch (java.net.SocketException e) {
-            System.out.println("client socket stopped");
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("client socket Exception");
         } finally {
-            ServerMain.onUserDisconnected(this);
-            System.out.println("Client disconnected");
             closeResources();
             System.out.println("resources closed");
         }
@@ -91,6 +87,8 @@ class UserSocket extends Thread {
     }
 
     public void closeResources() {
+        ServerMain.onUserDisconnected(this);
+
         try {
             in.close();
             out.close();

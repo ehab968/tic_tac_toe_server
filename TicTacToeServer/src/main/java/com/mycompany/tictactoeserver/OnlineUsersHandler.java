@@ -86,15 +86,18 @@ public class OnlineUsersHandler {
             }
         }
         return new Response(false, ResponseType.INVITE_DROPPED, null);
-
     }
 
     public Response acceptGameInvite(UserStreamSocket userSocket2, Request request) {
         try {
             UserStreamSocket userSocket1 = getUserStreamSocket((UserData) request.getData());
+            //to make sure user 1 still connected;
+            if (userSocket1 == null) {
+                return new Response(false, ResponseType.INVITE_DROPPED, null);
+            }
             GameSession session = new GameSession(userSocket1, userSocket2);
             ServerMain.activeGames.add(session);
-            
+
             String gameId = UUID.randomUUID().toString();
             GameData game = new GameData(gameId, userSocket1.user, userSocket2.user);
 
@@ -111,6 +114,9 @@ public class OnlineUsersHandler {
     public Response rejectGameInvite(UserStreamSocket userSocket2, Request request) {
         try {
             UserStreamSocket userSocket1 = getUserStreamSocket((UserData) request.getData());
+            if (userSocket1 == null) {
+                return new Response(false, ResponseType.INVITE_DROPPED, null);
+            }
             userSocket1.write(new Response(true, ResponseType.INVITE_REJECTED, userSocket2.user));
             return null;
         } catch (IOException ex) {
@@ -165,6 +171,9 @@ public class OnlineUsersHandler {
 
     public void endGame(UserStreamSocket sender) {
         GameSession gameSession = getSessionByPlayer(sender);
+        if (gameSession == null) {
+            return;
+        }
         UserStreamSocket recieveUserSocket = gameSession.getOpponent(sender);
         try {
             recieveUserSocket.write(new Response(true, ResponseType.SERVER_END_GAME, null));

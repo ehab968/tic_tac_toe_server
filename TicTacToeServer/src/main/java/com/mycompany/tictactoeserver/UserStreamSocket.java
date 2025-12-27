@@ -97,10 +97,8 @@ class UserStreamSocket extends Thread {
         } catch (java.net.SocketException e) {
             System.out.println("client socket stopped");
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("client socket Exception");
         } finally {
-            ServerMain.onlineStreamSockets.remove(this);
-            System.out.println("Client disconnected");
             closeResources();
             System.out.println("resources closed");
         }
@@ -123,10 +121,12 @@ class UserStreamSocket extends Thread {
 
     public void closeResources() {
         try {
+            ServerMain.onlineStreamSockets.remove(this);
             in.close();
             out.close();
             socket.close();
         } catch (IOException ex) {
+            System.out.println("error in closeResources");
             System.getLogger(UserStreamSocket.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
         }
     }
