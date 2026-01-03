@@ -3,7 +3,10 @@ install mvn and add to environment variables
 
 mvn clean package
 //for testing:
+Game:
 java -jar target/TicTacToeGui-1.0-SNAPSHOT.jar 
+Server:
+java -jar target/TicTacToeServer-1.0-SNAPSHOT.jar
 
 Game:
 jpackage --name "TicTacToe" --description "TicTacToe Game Client" --vendor "MyCompany" --input target/ --main-jar TicTacToeGui-1.0-SNAPSHOT.jar --main-class com.mycompany.tictactoegui.Launcher --type exe --icon "app_icon.ico" --win-shortcut --win-menu --win-dir-chooser --file-associations fa.properties --dest dist/game
