@@ -7,7 +7,6 @@ package com.mycompany.tictactoeserver;
 import com.iti.group3.tic_tac_toe_shared.GameData;
 import com.iti.group3.tic_tac_toe_shared.GameMove;
 import com.iti.group3.tic_tac_toe_shared.Request;
-import com.iti.group3.tic_tac_toe_shared.RequestType;
 import com.iti.group3.tic_tac_toe_shared.Response;
 import com.iti.group3.tic_tac_toe_shared.ResponseType;
 import com.iti.group3.tic_tac_toe_shared.UserData;
