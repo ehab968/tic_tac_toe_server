@@ -1,0 +1,12 @@
+install wix app
+install mvn and add to environment variables
+
+mvn clean package
+//for testing:
+java -jar target/TicTacToeGui-1.0-SNAPSHOT.jar 
+
+Game:
+jpackage --name "TicTacToe" --description "TicTacToe Game Client" --vendor "MyCompany" --input target/ --main-jar TicTacToeGui-1.0-SNAPSHOT.jar --main-class com.mycompany.tictactoegui.Launcher --type exe --icon "app_icon.ico" --win-shortcut --win-menu --win-dir-chooser --file-associations fa.properties --dest dist/game
+
+Server
+jpackage --name "TicTacToeServer" --description "TicTacToe Game Server" --vendor "MyCompany" --input target/ --main-jar TicTacToeServer-1.0-SNAPSHOT.jar --main-class com.mycompany.tictactoeserver.Launcher --type exe --win-console --win-dir-chooser --dest dist/server --icon "app_icon.ico"
